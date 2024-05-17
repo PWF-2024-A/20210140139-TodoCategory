@@ -19,9 +19,9 @@ class UserController extends Controller
 
         $search = request('search');
         if ($search) {
-            $users = User::where(function ($query) use ($search) {
-                $query->where('name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%');
+            $users = User::with('todos')->where(function ($query) use ($search) {
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%');
             })
                 ->where('id', '!=', '1')
                 ->orderBy('name')
@@ -29,7 +29,7 @@ class UserController extends Controller
                 // ->simplePaginate(10)
                 ->withQueryString();
         } else {
-            $users = User::where('id', '!=', '1')
+            $users = User::with('todos')->where('id', '!=', '1')
                 ->orderBy('name')
                 ->paginate(10);
             // ->simplePaginate(10);
@@ -39,6 +39,7 @@ class UserController extends Controller
         // dd($users->toArray());
         return view('user.index', compact('users'));
     }
+
 
     /**
      * Show the form for creating a new resource.
